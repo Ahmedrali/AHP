@@ -1,0 +1,243 @@
+<html>
+	<head>
+		<title>AHP</title>
+		<script type= "text/javascript" src="/static/jquery-1.6.2.min/jquery-1.6.2.min.js"> </script>
+		<script type= "text/javascript" src="/static/jquery-ui-1.8.14.custom/js/jquery-ui-1.8.14.custom.min.js"> </script>
+		<script type= "text/javascript" src="/static/ECOTree.js"></script>
+		<script type= "text/javascript" src="https://www.google.com/jsapi"></script>
+		<script type= "text/javascript" src="/static/gvTooltip.1.0.min.js"></script>
+		<script type= "text/javascript" src="/static/main.js"></script>
+		
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/jquery-ui-1.8.14.custom/css/start/jquery-ui-1.8.14.custom.css" />
+		<link rel="stylesheet" type="text/css" media="screen" href="/static/css/gvTooltip.1.0.css">
+		<link rel="stylesheet" type="text/css" href="/static/ECOTree.css" />
+		<xml:namespace ns="urn:schemas-microsoft-com:vml" prefix="v"/>
+		<style>v\:*{ behavior:url(#default#VML);}</style> 
+		<style>
+			.copy {
+				font-family : "Verdana";				
+				font-size : 10px;
+				color : #CCCCCC;
+			}
+			label, input { display:block; }
+			input.text { margin-bottom:12px; width:100%; padding: .2em; }
+			textarea.text { width:100%; padding: .3em; height: 100%;}
+			
+			#alt_tbl { width: 100%; margin: 20px 0;}
+			#alt_tbl table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+			.alt_td {border: 1px solid #eee; padding: .2em 10px; text-align:left;}
+			.ui-progressbar-value { background-image: url(/static/img/pbar-ani.gif); }
+			#ECOTreecanvas {align:center !important;}
+			.clickable {cursor:pointer;}
+			.econode{vertical-align:middle !important;}
+		</style>
+
+	</head>
+
+	<body>
+		
+		<div id="content" align="center">
+			
+			<div id="header">
+				
+			</div>
+		
+			<br/>
+			
+			
+			<div id="accordion" style="width:95%; ">
+				<h3><a href="#" id="title">Project Details</a></h3>
+				<div id="control" align="center" valign="middle" style="overflow: hidden;">
+					<div id="progressbar" style="height:22px;" style=""> </div>
+					
+					<div id="proj_details" class="ui-widget-content ui-corner-all" align="left" style="padding-left:20px; padding-bottom:5px; height:300px;" >
+						<table class="ui-widget" style="height:100%;">
+							<tr>
+								<td style="padding: 3px;" valign="top">
+									<label for="proj_name">Project Name</label>
+								</td>
+								<td style="padding: 3px;" valign="top">
+									<label for="proj_obj">Objective</label>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 3px;" valign="top">
+									<input type="text" id="proj_name" class="text ui-widget-content ui-corner-all"> </input>
+								</td>
+								<td style="padding: 3px;" valign="top">
+									<input type="text" id="proj_obj" class="text ui-widget-content ui-corner-all"> </input>
+								</td>
+							</tr>
+							<tr>
+								<td>
+									<label for="proj_desc">Description</label>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<textarea rows="5" cols="20" id="proj_desc" class="text ui-widget-content ui-corner-all"></textarea>
+								</td>
+							
+								<td align="right" valign="bottom">
+									<button class="ui-state-default ui-corner-all" style="width:100%;"  id="next_btn" type="button" onclick="next(2);"> Next Step </button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div id="alts" class="ui-widget-content ui-corner-all" align="left" style="padding-left:20px; padding-bottom:5px; height:300px;">
+						<table width="100%" height="100%" valign="top" class="ui-widget">
+							<tr>
+								<td width="40%" align="left">
+									<table width="100%" height="100%" valign="top" class="ui-widget">
+										<tr>
+											<td>
+												<label for="alt_name">Alternative Name</label>
+											</td>
+										</tr>
+										<tr>
+											<td >
+												<input type="text" id="alt_name" class="text ui-widget-content ui-corner-all"> </input>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label for="alt_desc">Description</label>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<textarea rows="5" cols="20" id="alt_desc" class="text ui-widget-content ui-corner-all"></textarea>
+											</td>
+											<td align="right" valign="bottom">
+												<button class="ui-state-default ui-corner-all" style="width:100%;"  id="add_alt_btn" type="button" onclick="add_alt();"> Add Alternative </button>
+											</td>
+										</tr>
+									</table>
+								</td>
+								<td width="50%" align="left" valign="top">
+									<div style="width: 100%; height: 290px; overflow: auto;">
+										<table id="alt_tbl" class="ui-widget ui-widget-content ui-corner-all">
+											<tr class="ui-widget-header ">
+												<td class="alt_td" width="40%">
+													Alternative
+												</td>
+												<td class="alt_td" width="60%">
+													Description
+												</td>
+											</tr>
+										</table>
+									</div>
+								</td>
+								<td width="10%" align="left" valign="bottom">
+									<button class="ui-state-default ui-corner-all" style="width:100%;" id="next_btn" type="button" onclick="next(3);"> Next Step </button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div id="criteria" class="ui-widget-content ui-corner-all" align="left" style="padding-left:20px; padding-bottom:5px; height:300px;">
+						<table class="ui-widget">
+							<tr>
+								<td style="padding: 3px;" valign="top">
+									<label for="crt_sel">Select Super Criterion</label>
+								</td>
+								<td style="padding: 3px;" valign="top">
+									<label for="crt_name">Criterion Name</label>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding: 3px;" valign="top">
+									<select id="crt_sel" class="text ui-widget-content ui-corner-all"> 
+										<option value="-1"> Select super Criterion </option>
+									</select>
+								</td>
+								<td style="padding: 3px;" valign="top">
+									<input type="text" id="crt_name" class="text ui-widget-content ui-corner-all"> </input>
+								</td>
+							</tr>
+							
+							<tr>
+								<td>
+									<label for="crt_desc">Description</label>
+								</td>
+							</tr>
+							<tr >
+								<td colspan="2">
+									<textarea rows="5" cols="20" id="crt_desc" class="text ui-widget-content ui-corner-all"></textarea>
+								</td>
+							</tr>
+							<tr>
+								<td align="left">
+									<button class="ui-state-default ui-corner-all" id="add_crt_btn" type="button" onclick="add_crt();"> Add Criterion </button>
+								</td>
+								<td align="right">
+									<button class="ui-state-default ui-corner-all" type="button" onclick="next(4);"> Next Step </button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div id="eval" class="ui-widget-content ui-corner-all" align="left" style="padding-left:20px; padding-bottom:5px; height:300px;">
+						<table width="95%" height="100%" class="ui-widget">
+							<tr>
+								<td width="15%" valign="top" align="center">
+									<div style="width: 100%; height: 290px; overflow: auto;">
+										<table style="width: 100%;" id="crt_lvls" class="ui-widget">
+											<tr> </tr>
+										</table>
+									</div>
+								</td>
+								<td width="70%" valign="top" align="center">
+									<div style="width: 100%; height: 290px; overflow: auto;">
+										<table id="eval_tbl" width="100%" class="ui-widget">
+											<tr> <td width="20%"> </td> <td width="60%"> </td> <td width="20%"> </td></tr>
+										</table>
+									</div>
+								</td>
+								<td align="left" valign="bottom">
+									<button class="ui-state-default ui-corner-all" style="width:100%;" type="button" onclick="next(5);"> Next Step </button>
+								</td>
+							</tr>
+						</table>
+					</div>
+					
+					<div id="eval_alt" class="ui-widget-content ui-corner-all" align="left" style="padding-left:20px; padding-bottom:5px; height:300px;">
+						<table width="95%" height="100%" class="ui-widget">
+							<tr>
+								<td width="20%" valign="top" align="center">
+									<div style="width: 100%; height: 290px; overflow: auto;">
+										<table style="width: 100%;" id="crt_lvls_alt" class="ui-widget">
+											<tr> </tr>
+										</table>
+									</div>
+								</td>
+								<td width="70%" valign="top" align="center">
+									<div style="width: 100%; height: 290px; overflow: auto;">
+										<table id="eval_tbl_alt" width="100%" class="ui-widget">
+											<tr> <td width="20%"> </td> <td width="60%"> </td> <td width="20%"> </td></tr>
+										</table>
+									</div>
+								</td>
+								<td align="left" valign="bottom" colspan="2">
+									<button class="ui-state-default ui-corner-all" style="width:100%;" type="button" onclick="next(6);"> Finish </button>
+								</td>
+							</tr>
+						</table>
+					</div>
+				
+					<div id="report" class="ui-widget-content ui-corner-all" align="center" style="padding-left:20px; padding-right:20px; padding-bottom:5px; height:300px;">
+						<div id="result_div">
+						</div>
+					</div>
+				
+				</div>
+			</div>
+			<div id="graph_dis" width="80%" height="600px" align="center" class="ui-widget-content ui-corner-all" >
+				<div id="graph" width="90%">
+				</div>
+			</div>
+			
+		</div>
+	</body>
+</html>
